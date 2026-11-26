@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "b22252ca4bfa578abb6a",
+  "displayName": "Reported cases",
+  "displayOption": "FitToPage",
+  "height": 838,
+  "width": 1280,
+  "objects": {
+    "background": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'#F4F7FB'"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "edd49d63b25052e3a17a",
+      "target": "e2daa7a8c8b85c5ebe66",
+      "type": "NoFilter"
+    },
+    {
+      "source": "758276bfb2b0565fbb1e",
+      "target": "e2daa7a8c8b85c5ebe66",
+      "type": "NoFilter"
+    },
+    {
+      "source": "b2f8cb34a932551ebf74",
+      "target": "e2daa7a8c8b85c5ebe66",
+      "type": "NoFilter"
+    },
+    {
+      "source": "e2daa7a8c8b85c5ebe66",
+      "target": "edd49d63b25052e3a17a",
+      "type": "NoFilter"
+    }
+  ]
+}

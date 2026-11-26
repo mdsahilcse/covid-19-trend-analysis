@@ -1,0 +1,11 @@
+Build a reproducible COVID-19 Trend Analysis portfolio project using the historical COVID-19 Data Repository by the Center for Systems Science and Engineering at Johns Hopkins University.
+
+Freeze the upstream inputs at an exact revision. Record the source URLs, licensing, inputs' checksums, geographical scope, and reporting dates. Use Python to convert the wide cumulative source into one row per reporting date and reporting location. Compute signed daily changes, Monday-to-Sunday totals, cumulative counts, and trailing seven-day averages. Preserve negative revisions. Handle missing observations explicitly and explain how delayed reporting affects interpretation.
+
+Design an Oracle star schema with geography and date dimensions. Deliver DDL with a repeatable setup, a transaction-safe load, analytic views using SQL window functions for running totals and rolling trends, comparison queries, and assertions that reconcile the warehouse with the Python outputs. Draw the schema and document dataset grains and KPI definitions.
+
+Create a Power BI report with country and date slicers, a trend with the seven-day average, date drill-down, country comparison, and a geographic view. Produce a Power BI Desktop export if the environment supports it. Include a locally runnable interactive browser dashboard so the analysis can be reviewed on any platform.
+
+Verify the historical totals independently against the publisher's final daily snapshot. Document each discrepancy and how it was handled. Publish a short insights summary, data-quality report, reproducible README, and demonstration video.
+
+Run the pipeline and tests from a clean checkout, investigate and fix failures, rerun the complete checks, and verify that GitHub serves the committed repository after publication. Document any verification that could not be performed.

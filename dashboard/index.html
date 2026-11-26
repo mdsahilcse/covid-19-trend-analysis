@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore archived Johns Hopkins CSSE COVID-19 reporting trends across countries and territories.">
+  <title>COVID-19 Trends | Global Reported Data</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23244fba'/%3E%3Cpath d='M4 12h4l2-4 4 8 2-4h4' fill='none' stroke='white' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="dashboard.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="frame site-header-inner">
+      <a class="brand" href="./" aria-label="COVID-19 Trends home">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-6 4 12 3-6h4"/></svg>
+        <span>COVID-19 Trends</span>
+      </a>
+      <a class="source-link" href="https://github.com/CSSEGISandData/COVID-19" target="_blank" rel="noopener noreferrer">Johns Hopkins CSSE <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+  <main class="frame">
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">GLOBAL REPORTED DATA</p>
+        <h1 id="page-title">COVID-19 trends by country</h1>
+        <p class="intro-copy">Compare archived reported cases and deaths across countries and territories.</p>
+      </div>
+      <p id="archive-range" class="archive-range">Historical archive</p>
+    </section>
+    <p id="status" class="status" role="status">Loading the historical archive…</p>
+    <div id="report" hidden>
+      <section class="filters" aria-label="Report controls">
+        <label>Country <select id="primary-country"></select></label>
+        <label>Compare with <select id="compare-country"></select></label>
+        <label>Start date <input id="start-date" type="date" required></label>
+        <label>End date <input id="end-date" type="date" required></label>
+        <button id="reset-range" class="reset" type="button">Full period</button>
+      </section>
+      <p id="date-error" class="error" role="status" hidden></p>
+      <section class="kpis" aria-label="Selected locations summary">
+        <article class="kpi"><p class="kpi-label">Reported cases</p><p id="total-cases" class="kpi-value"></p><p class="kpi-caption" id="cases-caption"></p></article>
+        <article class="kpi"><p class="kpi-label">Reported deaths</p><p id="total-deaths" class="kpi-value"></p><p class="kpi-caption" id="deaths-caption"></p></article>
+        <article class="kpi"><p class="kpi-label">Daily peak</p><p id="peak-value" class="kpi-value"></p><p id="peak-caption" class="kpi-caption"></p></article>
+      </section>
+      <section class="panel trend-panel" aria-labelledby="trend-title">
+        <header class="panel-heading">
+          <div><h2 id="trend-title">Reported trend</h2><p id="trend-caption"></p></div>
+          <div class="chart-controls">
+            <div class="segmented" role="group" aria-label="Metric">
+              <button id="metric-cases" type="button" aria-pressed="true">Cases</button>
+              <button id="metric-deaths" type="button" aria-pressed="false">Deaths</button>
+            </div>
+            <div class="segmented" role="group" aria-label="Time aggregation">
+              <button id="grain-daily" type="button" aria-pressed="true">Daily</button>
+              <button id="grain-weekly" type="button" aria-pressed="false">Weekly</button>
+              <button id="grain-cumulative" type="button" aria-pressed="false">Cumulative</button>
+            </div>
+          </div>
+        </header>
+        <div id="chart-legend" class="legend"></div>
+        <div class="trend-wrap">
+          <svg id="trend-chart" viewBox="0 0 1040 262" tabindex="0" aria-label="Trend chart. Use the left and right arrows to inspect values. In weekly view, press Enter on a data point to drill into that week."></svg>
+          <div id="chart-tooltip" class="chart-tooltip" hidden></div>
+        </div>
+        <p id="chart-note" class="figure-note"></p>
+      </section>
+      <div class="detail-grid">
+        <section class="panel map-panel" aria-labelledby="map-title">
+          <header class="panel-heading"><div><h2 id="map-title">Global distribution</h2><p id="map-caption"></p></div></header>
+          <svg id="case-map" viewBox="0 0 900 380" role="group" aria-label="World map of cumulative reported counts. Select a mapped country to update the trend."></svg>
+          <div class="map-bottom">
+            <div class="map-legend"><span>Lower</span><i></i><i></i><i></i><i></i><i></i><span>Higher</span></div>
+            <span class="map-instruction">Select a country to explore its trend</span>
+          </div>
+          <p class="figure-note">Logarithmic color scale. Use the country menu for reporting locations outside this map.</p>
+        </section>
+        <section class="panel table-panel" aria-labelledby="ranking-title">
+          <header class="panel-heading"><div><h2 id="ranking-title"></h2><p id="ranking-caption"></p></div></header>
+          <ol id="ranking" class="ranking"></ol>
+        </section>
+      </div>
+    </div>
+    <footer>Reported counts reflect testing, surveillance, revisions, and reporting practices. Negative daily values are retained as corrections. Counts are historical and may differ from other archives. Map by <a href="https://www.naturalearthdata.com/about/terms-of-use/" target="_blank" rel="noopener noreferrer">Natural Earth</a>.</footer>
+  </main>
+</body>
+</html>

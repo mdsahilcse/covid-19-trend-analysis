@@ -1,0 +1,393 @@
+{
+  "id": "COVID-19 Trends",
+  "name": "COVID-19 Trends",
+  "compatibilityLevel": 1567,
+  "model": {
+    "culture": "en-US",
+    "sourceQueryCulture": "en-US",
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "tables": [
+      {
+        "name": "Location",
+        "lineageTag": "8416ad77-7f8c-566f-b4df-927a254f821e",
+        "columns": [
+          {
+            "name": "Location ID",
+            "dataType": "string",
+            "sourceColumn": "country_id",
+            "summarizeBy": "none",
+            "lineageTag": "b5106c67-bfac-54ea-9497-1aceccf3586b",
+            "isHidden": true,
+            "isKey": true
+          },
+          {
+            "name": "Country or Territory",
+            "dataType": "string",
+            "sourceColumn": "country_name",
+            "summarizeBy": "none",
+            "lineageTag": "b821cdbd-922a-5b58-b12d-de4bbdc3b8ba",
+            "dataCategory": "Country"
+          },
+          {
+            "name": "ISO3",
+            "dataType": "string",
+            "sourceColumn": "iso3",
+            "summarizeBy": "none",
+            "lineageTag": "f966f558-8449-5411-80a4-fdd4011ffb62",
+            "dataCategory": "Country"
+          },
+          {
+            "name": "Latitude",
+            "dataType": "double",
+            "sourceColumn": "latitude",
+            "summarizeBy": "none",
+            "lineageTag": "31075da2-068d-5fcb-9162-337a1b361e58",
+            "dataCategory": "Latitude",
+            "isHidden": true
+          },
+          {
+            "name": "Longitude",
+            "dataType": "double",
+            "sourceColumn": "longitude",
+            "summarizeBy": "none",
+            "lineageTag": "154d6d12-f430-5364-9f62-39cf83c9050e",
+            "dataCategory": "Longitude",
+            "isHidden": true
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Location",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"\\\" & \"countries.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),",
+                "    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    Types = Table.TransformColumnTypes(Headers, {{\"country_id\", type text}, {\"country_name\", type text}, {\"iso3\", type text}, {\"latitude\", type number}, {\"longitude\", type number}}, \"en-US\")",
+                "in",
+                "    Types"
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      },
+      {
+        "name": "Calendar",
+        "lineageTag": "646f8164-2c12-52ab-94a0-0fa7689dd71c",
+        "columns": [
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "sourceColumn": "report_date",
+            "summarizeBy": "none",
+            "lineageTag": "1f93e7fb-a3c8-5ac5-9581-3fa532dd7f23",
+            "formatString": "yyyy-mm-dd",
+            "isKey": true
+          },
+          {
+            "name": "Week Starting",
+            "dataType": "dateTime",
+            "sourceColumn": "week_start",
+            "summarizeBy": "none",
+            "lineageTag": "e064a4fb-ed1c-5b7b-b4d5-d36689659edc",
+            "formatString": "yyyy-mm-dd"
+          },
+          {
+            "name": "Reporting Year",
+            "dataType": "int64",
+            "sourceColumn": "reporting_year",
+            "summarizeBy": "none",
+            "lineageTag": "0ec61d1a-1f8d-5087-a719-baf70b2c0cea",
+            "formatString": "0"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Calendar",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"\\\" & \"dates.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),",
+                "    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    Types = Table.TransformColumnTypes(Headers, {{\"report_date\", type date}, {\"week_start\", type date}}, \"en-US\"),",
+                "    ReportingYear = Table.AddColumn(Types, \"reporting_year\", each Date.Year(Date.AddDays([week_start], 3)), Int64.Type)",
+                "in",
+                "    ReportingYear"
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
+        "dataCategory": "Time",
+        "hierarchies": [
+          {
+            "name": "Reporting Date",
+            "lineageTag": "ab96ea22-db24-598d-8847-5a44f59bbf19",
+            "levels": [
+              {
+                "name": "Reporting Year",
+                "ordinal": 0,
+                "column": "Reporting Year",
+                "lineageTag": "7d31aaa6-1767-5c94-8cbf-5775f0407123"
+              },
+              {
+                "name": "Week Starting",
+                "ordinal": 1,
+                "column": "Week Starting",
+                "lineageTag": "597c8fd1-229c-5e1c-9b0b-5a542b49a653"
+              },
+              {
+                "name": "Date",
+                "ordinal": 2,
+                "column": "Date",
+                "lineageTag": "5260e84b-1bff-554f-a3db-9b423c15878b"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Daily Reports",
+        "lineageTag": "290d5bd4-933a-582f-acd5-0ec666d7848b",
+        "columns": [
+          {
+            "name": "Report Date",
+            "dataType": "dateTime",
+            "sourceColumn": "report_date",
+            "summarizeBy": "none",
+            "lineageTag": "97d6fc35-99f3-5580-b234-975a419e47ac",
+            "isHidden": true
+          },
+          {
+            "name": "Location ID",
+            "dataType": "string",
+            "sourceColumn": "country_id",
+            "summarizeBy": "none",
+            "lineageTag": "b5106c67-bfac-54ea-9497-1aceccf3586b",
+            "isHidden": true
+          },
+          {
+            "name": "Daily Cases",
+            "dataType": "int64",
+            "sourceColumn": "cases_daily",
+            "summarizeBy": "none",
+            "lineageTag": "876b7819-9ee0-5ac5-9bd3-40b3aa47ba6a",
+            "isHidden": true
+          },
+          {
+            "name": "Daily Deaths",
+            "dataType": "int64",
+            "sourceColumn": "deaths_daily",
+            "summarizeBy": "none",
+            "lineageTag": "3247ebfb-3adf-5731-a595-cea7a48bd17c",
+            "isHidden": true
+          },
+          {
+            "name": "Cumulative Cases",
+            "dataType": "int64",
+            "sourceColumn": "cases_cumulative",
+            "summarizeBy": "none",
+            "lineageTag": "b182cf8e-1855-50c4-b791-773643e69df2",
+            "isHidden": true
+          },
+          {
+            "name": "Cumulative Deaths",
+            "dataType": "int64",
+            "sourceColumn": "deaths_cumulative",
+            "summarizeBy": "none",
+            "lineageTag": "2ddf13a3-00b3-508b-a724-22107c2b56ab",
+            "isHidden": true
+          },
+          {
+            "name": "Rolling Cases",
+            "dataType": "double",
+            "sourceColumn": "cases_avg_7d",
+            "summarizeBy": "none",
+            "lineageTag": "5b6e06d6-59e5-50f6-b71c-7550737b55c7",
+            "isHidden": true
+          },
+          {
+            "name": "Rolling Deaths",
+            "dataType": "double",
+            "sourceColumn": "deaths_avg_7d",
+            "summarizeBy": "none",
+            "lineageTag": "fafbb212-7b3a-5abe-a48d-f1093294bc4a",
+            "isHidden": true
+          },
+          {
+            "name": "Cases Missing",
+            "dataType": "int64",
+            "sourceColumn": "cases_missing",
+            "summarizeBy": "none",
+            "lineageTag": "fbbc307c-4068-5661-8caf-68393bb15105",
+            "isHidden": true
+          },
+          {
+            "name": "Deaths Missing",
+            "dataType": "int64",
+            "sourceColumn": "deaths_missing",
+            "summarizeBy": "none",
+            "lineageTag": "19ec7a35-a6b7-589f-9db9-d7ab7d9b385f",
+            "isHidden": true
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Daily Reports",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"\\\" & \"daily.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),",
+                "    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    Types = Table.TransformColumnTypes(Headers, {{\"report_date\", type date}, {\"country_id\", type text}, {\"cases_daily\", Int64.Type}, {\"deaths_daily\", Int64.Type}, {\"cases_cumulative\", Int64.Type}, {\"deaths_cumulative\", Int64.Type}, {\"cases_avg_7d\", type number}, {\"deaths_avg_7d\", type number}, {\"cases_missing\", Int64.Type}, {\"deaths_missing\", Int64.Type}}, \"en-US\")",
+                "in",
+                "    Types"
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
+        "measures": [
+          {
+            "name": "Reported Cases",
+            "expression": "SUM('Daily Reports'[Daily Cases])",
+            "formatString": "#,0;(#,0);0",
+            "lineageTag": "78caf841-14a2-585d-b533-beac625436a2",
+            "description": "Sum of signed change over the dates and reporting locations in context."
+          },
+          {
+            "name": "Cases 7-day Average",
+            "expression": "IF(HASONEVALUE('Calendar'[Date]), SUM('Daily Reports'[Rolling Cases]))",
+            "formatString": "#,0.0;(#,0.0);0.0",
+            "lineageTag": "3d96e6b6-be2e-5680-9976-bb8e90093f26",
+            "description": "Trailing seven-day average. Use at day grain. The first six days without a complete window are blank."
+          },
+          {
+            "name": "Cases at End Date",
+            "expression": [
+              "VAR EndDate = MAX('Calendar'[Date])",
+              "RETURN",
+              "    CALCULATE(",
+              "        SUM('Daily Reports'[Cumulative Cases]),",
+              "        KEEPFILTERS('Calendar'[Date] = EndDate)",
+              "    )"
+            ],
+            "formatString": "#,0;(#,0);0",
+            "lineageTag": "787ccdc8-7213-5db3-a72e-ba3e96713164",
+            "description": "Cumulative reports on the final selected day."
+          },
+          {
+            "name": "Peak Daily Cases",
+            "expression": "MAXX(VALUES('Calendar'[Date]), [Reported Cases])",
+            "formatString": "#,0;(#,0);0",
+            "lineageTag": "8bcfdadf-0c12-56e6-8b1d-602c5d329a70",
+            "description": "Maximum signed daily change in the filter context."
+          },
+          {
+            "name": "Reported Deaths",
+            "expression": "SUM('Daily Reports'[Daily Deaths])",
+            "formatString": "#,0;(#,0);0",
+            "lineageTag": "19884009-602a-548c-bae0-c06459e73476",
+            "description": "Sum of signed change over the dates and reporting locations in context."
+          },
+          {
+            "name": "Deaths 7-day Average",
+            "expression": "IF(HASONEVALUE('Calendar'[Date]), SUM('Daily Reports'[Rolling Deaths]))",
+            "formatString": "#,0.0;(#,0.0);0.0",
+            "lineageTag": "3aa4c4f2-0e5f-5024-a133-1c7a8455d205",
+            "description": "Trailing seven-day average. Use at day grain. The first six days without a complete window are blank."
+          },
+          {
+            "name": "Deaths at End Date",
+            "expression": [
+              "VAR EndDate = MAX('Calendar'[Date])",
+              "RETURN",
+              "    CALCULATE(",
+              "        SUM('Daily Reports'[Cumulative Deaths]),",
+              "        KEEPFILTERS('Calendar'[Date] = EndDate)",
+              "    )"
+            ],
+            "formatString": "#,0;(#,0);0",
+            "lineageTag": "3f8c4f93-803f-52c3-92f7-67bf272964aa",
+            "description": "Cumulative reports on the final selected day."
+          },
+          {
+            "name": "Peak Daily Deaths",
+            "expression": "MAXX(VALUES('Calendar'[Date]), [Reported Deaths])",
+            "formatString": "#,0;(#,0);0",
+            "lineageTag": "c87d3b46-a7ee-5c68-9cab-02c15e85a11e",
+            "description": "Maximum signed daily change in the filter context."
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "2298a9f7-c3b6-585e-9261-650edd89f0fd",
+        "fromTable": "Daily Reports",
+        "fromColumn": "Location ID",
+        "toTable": "Location",
+        "toColumn": "Location ID"
+      },
+      {
+        "name": "015a353d-9d7d-5f8c-97f1-e119dfd23273",
+        "fromTable": "Daily Reports",
+        "fromColumn": "Report Date",
+        "toTable": "Calendar",
+        "toColumn": "Date"
+      }
+    ],
+    "expressions": [
+      {
+        "name": "DataFolder",
+        "kind": "m",
+        "expression": [
+          "\"C:\\covid-19-trend-analysis\\data\\processed\" meta [IsParameterQuery=true, Type=\"Text\", IsParameterQueryRequired=true]"
+        ],
+        "lineageTag": "01c52f0c-9740-5164-8a68-b0a32423fbe1",
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Text"
+          }
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"DataFolder\", \"Location\", \"Calendar\", \"Daily Reports\"]"
+      },
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "0"
+      }
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "c86bccf5ed715108902d",
+  "displayName": "Reported deaths",
+  "displayOption": "FitToPage",
+  "height": 838,
+  "width": 1280,
+  "objects": {
+    "background": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'#F4F7FB'"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "visualInteractions": [
+    {
+      "source": "4298da03c356596193f5",
+      "target": "c108c4e19a495a78b249",
+      "type": "NoFilter"
+    },
+    {
+      "source": "3dad2dcb5e615aeb960d",
+      "target": "c108c4e19a495a78b249",
+      "type": "NoFilter"
+    },
+    {
+      "source": "d8033c3f8c4757168656",
+      "target": "c108c4e19a495a78b249",
+      "type": "NoFilter"
+    },
+    {
+      "source": "c108c4e19a495a78b249",
+      "target": "4298da03c356596193f5",
+      "type": "NoFilter"
+    }
+  ]
+}
