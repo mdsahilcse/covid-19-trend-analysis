@@ -10,6 +10,8 @@ const compact = new Intl.NumberFormat("en", {notation: "compact", maximumFractio
 const metricNames = {cases: "cases", deaths: "deaths"};
 const colors = ["#2459ca", "#087c75"];
 const mapColors = ["#e6eeff", "#c8d9fb", "#9ab7f1", "#658ad9", "#3464c4", "#183b8c"];
+// Natural Earth codes Kosovo as KOS, while the JHU location lookup uses XKS.
+const isoAliases = new Map([["KOS", "XKS"]]);
 const svgNs = "http://www.w3.org/2000/svg";
 
 let countries;
@@ -205,7 +207,9 @@ function axisBounds(points) {
   const roughUnit = (high - low) / 4;
   const scale = 10 ** Math.floor(Math.log10(roughUnit));
   const unit = scale * [1, 2, 2.5, 5, 10].find(value => value >= roughUnit / scale);
-  return [Math.floor(low / unit) * unit, Math.ceil(high / unit) * unit, unit];
+  // Small corrections keep a narrow band below zero instead of a full negative gridline.
+  const minimum = low < 0 && -low < unit / 4 ? low * 1.25 : Math.floor(low / unit) * unit;
+  return [minimum, Math.ceil(high / unit) * unit, unit];
 }
 
 function trendLine(points, valueKey, index, x, y) {
@@ -274,20 +278,24 @@ function renderTrend(locations, dates) {
   const x = step => points.length === 1 ? (left + right) / 2 : left + step * (right - left) / (points.length - 1);
   const y = value => bottom - (value - minimum) * (bottom - top) / (maximum - minimum);
 
-  for (let step = minimum; step <= maximum + unit / 100; step += unit) {
+  for (let tick = Math.ceil(minimum / unit); tick * unit <= maximum + unit / 100; tick++) {
+    const step = tick * unit || 0;
     const level = y(step);
-    chart.append(node("line", {x1: left, x2: right, y1: level, y2: level, class: step === 0 ? "zero" : "grid"}));
+    chart.append(node("line", {x1: left, x2: right, y1: level, y2: level, class: tick === 0 ? "zero" : "grid"}));
     chart.append(node("text", {x: left - 8, y: level + 4, "text-anchor": "end"}, compact.format(step)));
   }
   const tickCount = Math.min(points.length, width < 520 ? 5 : 8);
+  // Month labels repeat when ticks are less than a month apart, so label days instead.
+  const spanDays = (Date.parse(points.at(-1).date) - Date.parse(points[0].date)) / 86400000;
+  const sameYear = points[0].date.slice(0, 4) === points.at(-1).date.slice(0, 4);
+  const tickFormat = spanDays / Math.max(1, tickCount - 1) >= 31 ? monthFormat : sameYear ? dayFormat : dateFormat;
   for (let tick = 0; tick < tickCount; tick++) {
     const position = tickCount === 1 ? 0 : Math.round(tick * (points.length - 1) / (tickCount - 1));
     const first = tick === 0 && tickCount > 1;
     const last = tick === tickCount - 1 && tickCount > 1;
-    const format = dates.length <= 150 ? dayFormat : monthFormat;
     chart.append(node("text", {
       x: x(position), y: bottom + 18, "text-anchor": first ? "start" : last ? "end" : "middle",
-    }, formatDate(points[position].date, format)));
+    }, formatDate(points[position].date, tickFormat)));
   }
 
   for (const index of locations.keys()) {
@@ -324,7 +332,7 @@ function renderMap(end, primary) {
   byId("map-caption").textContent = "Cumulative reported " + metricNames[metric] + " through " + formatDate(end);
   const dots = [];
   for (const shape of shapes) {
-    const place = byIso.get(shape.code);
+    const place = byIso.get(isoAliases.get(shape.code) ?? shape.code);
     const count = place?.days.get(end)?.[key];
     const path = node("path", {d: shape.path, fill: color(count)});
     path.append(node("title", {}, place ? place.name + " · " + (count === null || count === undefined ? "No observation" : whole.format(count)) : shape.name));

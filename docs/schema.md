@@ -1,5 +1,9 @@
 # Reporting star schema
 
+![Star schema with FACT_COUNTRY_DAY joined to DIM_COUNTRY and DIM_REPORT_DATE, and the analytic views derived from the fact](schema.svg)
+
+The same entity-relationship structure in Mermaid:
+
 ```mermaid
 erDiagram
     DIM_COUNTRY ||--o{ FACT_COUNTRY_DAY : identifies

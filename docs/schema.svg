@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" font-family="Inter, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="title desc">
+  <title id="title">COVID-19 reporting star schema</title>
+  <desc id="desc">Fact table FACT_COUNTRY_DAY joins dimensions DIM_COUNTRY and DIM_REPORT_DATE. Analytic views V_COUNTRY_DAILY and V_COUNTRY_WEEKLY derive daily changes, seven-day averages, cumulative totals and weekly totals with window functions.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="800" fill="#ffffff"/>
+
+  <text x="40" y="52" font-size="26" font-weight="700" fill="#19293e">COVID-19 reporting star schema (Oracle)</text>
+  <text x="40" y="80" font-size="15" fill="#5a6a80">Grain: one fact row per JHU reporting location per calendar date · 201 locations × 1,143 dates = 229,743 rows</text>
+
+  <!-- DIM_COUNTRY -->
+  <g transform="translate(40,120)">
+    <rect width="320" height="238" rx="10" fill="#ffffff" stroke="#285ac7" stroke-width="2"/>
+    <path d="M10,0 H310 A10,10 0 0 1 320,10 V58 H0 V10 A10,10 0 0 1 10,0 Z" fill="#285ac7"/>
+    <text x="16" y="27" font-size="17" font-weight="700" fill="#ffffff">DIM_COUNTRY</text>
+    <text x="16" y="47" font-size="12" fill="#dbe6ff">Dimension · 201 rows</text>
+    <g font-size="14" fill="#19293e">
+      <text x="16" y="80"><tspan font-weight="700" fill="#285ac7">PK </tspan><tspan font-family="Menlo, Consolas, monospace">country_id</tspan></text>
+      <text x="304" y="80" text-anchor="end" fill="#5a6a80">VARCHAR2(80)</text>
+      <text x="16" y="117" font-family="Menlo, Consolas, monospace">country_name</text>
+      <text x="304" y="117" text-anchor="end" fill="#5a6a80">VARCHAR2(160)</text>
+      <text x="16" y="154" font-family="Menlo, Consolas, monospace">iso3</text>
+      <text x="304" y="154" text-anchor="end" fill="#5a6a80">VARCHAR2(3)</text>
+      <text x="16" y="191" font-family="Menlo, Consolas, monospace">latitude</text>
+      <text x="304" y="191" text-anchor="end" fill="#5a6a80">NUMBER</text>
+      <text x="16" y="228" font-family="Menlo, Consolas, monospace">longitude</text>
+      <text x="304" y="228" text-anchor="end" fill="#5a6a80">NUMBER</text>
+    </g>
+    <g stroke="#e3eaf3"><line x1="0" y1="96" x2="320" y2="96"/><line x1="0" y1="133" x2="320" y2="133"/><line x1="0" y1="170" x2="320" y2="170"/><line x1="0" y1="207" x2="320" y2="207"/></g>
+  </g>
+
+  <!-- FACT_COUNTRY_DAY -->
+  <g transform="translate(440,120)">
+    <rect width="320" height="201" rx="10" fill="#f4fbfa" stroke="#087c75" stroke-width="2.5"/>
+    <path d="M10,0 H310 A10,10 0 0 1 320,10 V58 H0 V10 A10,10 0 0 1 10,0 Z" fill="#087c75"/>
+    <text x="16" y="27" font-size="17" font-weight="700" fill="#ffffff">FACT_COUNTRY_DAY</text>
+    <text x="16" y="47" font-size="12" fill="#d5f3ef">Fact · 229,743 rows</text>
+    <g font-size="14" fill="#19293e">
+      <text x="16" y="80"><tspan font-weight="700" fill="#087c75">PK FK </tspan><tspan font-family="Menlo, Consolas, monospace">country_id</tspan></text>
+      <text x="304" y="80" text-anchor="end" fill="#5a6a80">VARCHAR2(80)</text>
+      <text x="16" y="117"><tspan font-weight="700" fill="#087c75">PK FK </tspan><tspan font-family="Menlo, Consolas, monospace">report_date</tspan></text>
+      <text x="304" y="117" text-anchor="end" fill="#5a6a80">DATE</text>
+      <text x="16" y="154" font-family="Menlo, Consolas, monospace">cases_cumulative</text>
+      <text x="304" y="154" text-anchor="end" fill="#5a6a80">NUMBER(18)</text>
+      <text x="16" y="191" font-family="Menlo, Consolas, monospace">deaths_cumulative</text>
+      <text x="304" y="191" text-anchor="end" fill="#5a6a80">NUMBER(18)</text>
+    </g>
+    <g stroke="#d3ece8"><line x1="0" y1="96" x2="320" y2="96"/><line x1="0" y1="133" x2="320" y2="133"/><line x1="0" y1="170" x2="320" y2="170"/></g>
+  </g>
+
+  <!-- DIM_REPORT_DATE -->
+  <g transform="translate(840,120)">
+    <rect width="320" height="127" rx="10" fill="#ffffff" stroke="#285ac7" stroke-width="2"/>
+    <path d="M10,0 H310 A10,10 0 0 1 320,10 V58 H0 V10 A10,10 0 0 1 10,0 Z" fill="#285ac7"/>
+    <text x="16" y="27" font-size="17" font-weight="700" fill="#ffffff">DIM_REPORT_DATE</text>
+    <text x="16" y="47" font-size="12" fill="#dbe6ff">Dimension · 1,143 rows</text>
+    <g font-size="14" fill="#19293e">
+      <text x="16" y="80"><tspan font-weight="700" fill="#285ac7">PK </tspan><tspan font-family="Menlo, Consolas, monospace">report_date</tspan></text>
+      <text x="304" y="80" text-anchor="end" fill="#5a6a80">DATE</text>
+      <text x="16" y="117" font-family="Menlo, Consolas, monospace">week_start</text>
+      <text x="304" y="117" text-anchor="end" fill="#5a6a80">DATE (Monday)</text>
+    </g>
+    <line x1="0" y1="96" x2="320" y2="96" stroke="#e3eaf3"/>
+  </g>
+
+  <!-- Relationships: one dimension row to many fact rows -->
+  <g stroke="#19293e" stroke-width="1.8" fill="none">
+    <line x1="360" y1="195" x2="440" y2="195"/>
+    <line x1="370" y1="187" x2="370" y2="203"/>
+    <line x1="376" y1="187" x2="376" y2="203"/>
+    <path d="M426,195 L440,186 M426,195 L440,204"/>
+    <line x1="420" y1="187" x2="420" y2="203"/>
+    <path d="M760,232 H800 V195 H840"/>
+    <line x1="830" y1="187" x2="830" y2="203"/>
+    <line x1="824" y1="187" x2="824" y2="203"/>
+    <path d="M774,232 L760,223 M774,232 L760,241"/>
+    <line x1="780" y1="224" x2="780" y2="240"/>
+  </g>
+  <text x="400" y="180" font-size="12" fill="#5a6a80" text-anchor="middle">1 : N</text>
+  <text x="800" y="180" font-size="12" fill="#5a6a80" text-anchor="middle">1 : N</text>
+
+  <!-- Derivation arrows -->
+  <g stroke="#64748b" stroke-width="1.6" fill="none" stroke-dasharray="6 5">
+    <path d="M520,321 V438" marker-end="url(#arrow)"/>
+    <path d="M560,560 H638" marker-end="url(#arrow)"/>
+    <path d="M1000,247 V438" marker-end="url(#arrow)"/>
+  </g>
+  <text x="532" y="388" font-size="12.5" fill="#475569">window functions</text>
+  <text x="1012" y="350" font-size="12.5" fill="#475569">week_start join</text>
+
+  <!-- V_COUNTRY_DAILY -->
+  <g transform="translate(140,440)">
+    <rect width="420" height="232" rx="10" fill="#f8fafc" stroke="#475569" stroke-width="1.6" stroke-dasharray="7 4"/>
+    <text x="16" y="31" font-size="17" font-weight="700" fill="#19293e">V_COUNTRY_DAILY</text>
+    <text x="16" y="52" font-size="12" fill="#5a6a80">Analytic view · one row per location-day</text>
+    <g font-size="13.5" fill="#19293e">
+      <text x="16" y="86"><tspan font-family="Menlo, Consolas, monospace">cases_daily, deaths_daily</tspan></text>
+      <text x="404" y="86" text-anchor="end" fill="#5a6a80">LAG() signed change</text>
+      <text x="16" y="118"><tspan font-family="Menlo, Consolas, monospace">cases_cumulative, deaths_…</tspan></text>
+      <text x="404" y="118" text-anchor="end" fill="#5a6a80">SUM() OVER running total</text>
+      <text x="16" y="150"><tspan font-family="Menlo, Consolas, monospace">cases_avg_7d, deaths_avg_7d</tspan></text>
+      <text x="404" y="150" text-anchor="end" fill="#5a6a80">AVG() OVER 7 rows</text>
+      <text x="16" y="182"><tspan font-family="Menlo, Consolas, monospace">cases_missing, deaths_missing</tspan></text>
+      <text x="404" y="182" text-anchor="end" fill="#5a6a80">gap flags</text>
+      <text x="16" y="214" fill="#5a6a80" font-size="12.5">A known value after a gap starts a new cumulative baseline.</text>
+    </g>
+  </g>
+
+  <!-- V_COUNTRY_WEEKLY -->
+  <g transform="translate(640,440)">
+    <rect width="420" height="232" rx="10" fill="#f8fafc" stroke="#475569" stroke-width="1.6" stroke-dasharray="7 4"/>
+    <text x="16" y="31" font-size="17" font-weight="700" fill="#19293e">V_COUNTRY_WEEKLY</text>
+    <text x="16" y="52" font-size="12" fill="#5a6a80">Analytic view · one row per location-week</text>
+    <g font-size="13.5" fill="#19293e">
+      <text x="16" y="86"><tspan font-family="Menlo, Consolas, monospace">week_start, country_id</tspan></text>
+      <text x="404" y="86" text-anchor="end" fill="#5a6a80">Monday-start week</text>
+      <text x="16" y="118"><tspan font-family="Menlo, Consolas, monospace">cases_weekly, deaths_weekly</tspan></text>
+      <text x="404" y="118" text-anchor="end" fill="#5a6a80">SUM() of daily changes</text>
+      <text x="16" y="150"><tspan font-family="Menlo, Consolas, monospace">*_observed_days</tspan></text>
+      <text x="404" y="150" text-anchor="end" fill="#5a6a80">COUNT() known days</text>
+      <text x="16" y="182"><tspan font-family="Menlo, Consolas, monospace">days_in_scope</tspan></text>
+      <text x="404" y="182" text-anchor="end" fill="#5a6a80">partial-week coverage</text>
+      <text x="16" y="214" fill="#5a6a80" font-size="12.5">32,964 location-weeks reconcile with the Python export.</text>
+    </g>
+  </g>
+
+  <text x="40" y="726" font-size="13.5" fill="#5a6a80">The fact stores published cumulative snapshots. 04_verify.sql compares every view row with the Python daily.csv and weekly.csv exports</text>
+  <text x="40" y="748" font-size="13.5" fill="#5a6a80">(SQL MINUS plus row counts) inside the refresh transaction, so a mismatch rolls the load back before COMMIT.</text>
+</svg>

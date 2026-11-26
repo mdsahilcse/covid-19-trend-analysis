@@ -33,7 +33,7 @@ Open the local dashboard to select countries, choose a period and reporting metr
 - Problem statement, metrics, methodology, and dataset attribution. [Methodology](docs/methodology.md)
 - Peak timing, final country totals, and large source revisions. [Insights](docs/insights.md)
 - Source checksums, final snapshot reconciliation, and correction counts. [Data-quality report](docs/data-quality.md)
-- A short tour of country comparison, weekly drill-down, and the map. [Demo video](docs/covid-19-demo.mp4)
+- A 43-second narrated tour of country comparison, a weekly drill-down into a reported correction, and the map. [Demo video](docs/covid-19-demo.mp4)
 
 ## Data and interpretation
 
